@@ -121,7 +121,7 @@ console.log("person2.friends = " + person2.friends);
 // person2.friends = a,b,c,d
 ``` 
 
-会发现改了对象一，对象二的常量也会随之共享，这是将会存在很大的问题
+修改了对象一，对象二的常量也会随之共享，这是将会存在很大的问题
 
 #### 2.3 组合模式
 
@@ -142,7 +142,7 @@ person2.sayName();
 
 #### 2.3 动态原型模式
 
-在原本的状态加个判断，进一步优化，当没调用这个方法则不新建方法
+在原本的状态加个判断可以进一步优化，当没调用这个方法则不新建方法
 
 ```
 function Person(name) {
@@ -156,3 +156,5 @@ function Person(name) {
 let person = new Person("name");
 person.sayName();
 ```
+
+
