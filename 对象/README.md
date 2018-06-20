@@ -1,10 +1,15 @@
 目录
-* [对象](#id1)
+* [1. 理解对象](#id1)
+* [1.1 属性类型](#id11)
+* [1.2 属性方法](#id12)
+* [2 创建对象](#id2)
+* [2.1 工厂模式 及 构造函数模式](#id21)
+* [3 对象保护](#id21)
 
 # 对象
 
-#### <h2 id="id1">1. 理解对象</h2>
-#### 1.1 属性类型
+#### <h1 id="id1">1. 理解对象</h1>
+#### <h2 id="id11">1.1 属性类型</h2>
 
 writable: 是否能修改属性的值</br>
 configurable 能否通过delete删除属性从而定义属性，能否修改属性特性
@@ -27,7 +32,7 @@ Object.defineProperty(person, "name", {
 // 之后不能调用defineProperty在进行设置，不然会报错
 ```
 
-#### 1.2 属性方法
+#### <h2 id="id12">1.2 属性方法</h2>
 
 ##### 1.2.1 Object.defineProperty(obj, prop, descriptor)
 方法会直接在一个对象上定义一个新属性，或者修改一个对象的现有属性， 并返回这个对象
@@ -57,8 +62,8 @@ Object.defineProperties(obj, {
 console.log(obj.name, obj.age);
 ``` 
 
-#### 2. 创建对象
-#### 2.1 工厂模式 及 构造函数模式
+#### <h1 id="id2"> 2. 创建对象</h1>
+#### <h2 id="id21"> 2.1 工厂模式 及 构造函数模式</h2>
 ``` 
 function createPerson(name) {
     let obj = new Object();
@@ -161,7 +166,7 @@ person.sayName();
 ```
 
 
-#### 对象的深拷贝
+#### <h1 id="id3">3 对象的保护</h1>
 
 ```
 Object.deepFreeze = function (obj) {
