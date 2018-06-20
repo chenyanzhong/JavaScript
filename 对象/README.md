@@ -158,3 +158,26 @@ person.sayName();
 ```
 
 
+#### 对象的深拷贝
+
+```
+Object.deepFreeze = function (obj) {
+    // Retrieve the property names defined on obj(检查对象上面的属性名)
+    var propNames = Object.getOwnPropertyNames(obj);
+
+    // Freeze properties before freezing self(在冻结自身之前先冻结属性)
+    propNames.forEach(function (name) {
+        var prop = obj[name];
+
+        // Freeze prop if it is an object(如果属性值是一个对象就冻结它)
+        if (typeof prop == 'object' && prop !== null) {
+            Object.deepFreeze(prop);
+        }
+    });
+
+    // Freeze self (no-op if already frozen)
+    return Object.freeze(obj);
+}
+
+```
+
