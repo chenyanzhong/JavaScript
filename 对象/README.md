@@ -4,12 +4,12 @@
 * [1.2 属性方法](#id12)
 * [2 创建对象](#id2)
 * [2.1 工厂模式 及 构造函数模式](#id21)
-* [3 对象保护](#id21)
+* [3 对象保护](#id3)
 
 # 对象
 
-#### <h1 id="id1">1. 理解对象</h1>
-#### <h2 id="id11">1.1 属性类型</h2>
+#### <h2 id="id1">1. 理解对象</h2>
+#### <h3 id="id11">1.1 属性类型</h3>
 
 writable: 是否能修改属性的值</br>
 configurable 能否通过delete删除属性从而定义属性，能否修改属性特性
@@ -62,8 +62,8 @@ Object.defineProperties(obj, {
 console.log(obj.name, obj.age);
 ``` 
 
-#### <h1 id="id2"> 2. 创建对象</h1>
-#### <h2 id="id21"> 2.1 工厂模式 及 构造函数模式</h2>
+#### <h2 id="id2"> 2. 创建对象</h2>
+#### <h3 id="id21"> 2.1 工厂模式 及 构造函数模式</h3>
 ``` 
 function createPerson(name) {
     let obj = new Object();
@@ -166,7 +166,7 @@ person.sayName();
 ```
 
 
-#### <h1 id="id3">3 对象的保护</h1>
+####  <h2 id="id3">3 对象的保护</h2>
 
 ```
 Object.deepFreeze = function (obj) {
