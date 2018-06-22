@@ -1,0 +1,48 @@
+
+## 跨域问题
+
+### 1 什么是跨域?
+
+协议、域名、端口不同就会当成不同的域,同源策略限制从一个源加载的文档或脚本如何与来自另一个源的资源进行交互。<br/><br/>
+同源政策:
+```
+（1） Cookie、LocalStorage 和 IndexDB 无法读取。
+（2） DOM 无法获得。
+（3） AJAX 请求不能发送。
+```
+
+### 解决跨域问题
+### 2 cookie
+共享cookie,在一级域名相同二级域名不同的请求下 <br/>
+A页面
+```
+document.domain='example.com';
+document.cookie = "test1=hello";
+```
+B页面
+```
+document.domain='example.com';
+var allCookie = document.cookie;
+//test1=hello
+```
+这种方法只适用于 Cookie 和 iframe 窗口,LocalStorage 和 IndexDB 无法通过这种方法
+
+### 3 iframe
+#### 3.1 片段识别符
+#### 3.2 window.name
+#### 3.3 window.postMessage
+
+### 4 AJAX
+同源政策规定，AJAX请求只能发给同源的网址，否则就报错。
+
+#### 4.1 JSONP
+网页动态插入<script>元素，由它向跨源网址发出请求
+
+#### 4.2 WebSocket
+
+#### 4.3 CORS 跨源资源分享（Cross-Origin Resource Sharing)
+
+
+<br/><br/><br/><br/>
+相关资料参考:<br/>
+http://www.ruanyifeng.com/blog/2016/04/same-origin-policy.html
