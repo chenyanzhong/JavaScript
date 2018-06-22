@@ -92,14 +92,14 @@ close callbacks:</br>
 ```
 process.nextTick();
 setImmediate();
-
 ```
-process.nextTick() 会在本轮执行栈任务执行完毕后执行,比微任务promise()还提前执行</br>
-本轮任务 > process.nextTick() > promise()</br></br>
+process.nextTick与promise:</br>
+会在本轮执行栈任务执行完毕后执行,比微任务promise()还提前执行</br>
+本轮执行栈任务 > process.nextTick() > promise()</br>
 
-setImmediate()与setTimeout()</br>
-setImmediate在check中执行,与setTimeout在timer执行,然后在poll等待io执行,会先进行check再执行timer,
-如果符合执行吗,setImmediate会在setTimeout之前执行
+setImmediate与setTimeout:</br>
+setImmediate 在 check 中执行,与 setTimeout 在 timer 执行,如果在 poll 等待 io 执行,会先进行 check 再执行 timer,
+如果符合执行吗, setImmediate 会在 setTimeout 之前执行
 
    
 </br></br></br></br>
