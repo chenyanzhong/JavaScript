@@ -2,9 +2,9 @@
 
 ### <h2 id='1'>1.事件机制</h2>
 
-### 1.1 模型
+#### 1.1 模型
 
-### 1.2 执行栈与事件队列
+#### 1.2 执行栈与事件队列
 javascript是单线程,可以极大提高执行效率,事件会一一排放在事件队列中,</br>
 执行栈就是当前执行的任务,js单线程先执行栈里面的事件,当栈里面事件为空,</br>
 没有任务执行时,从事件队列里面读取继续执行.
@@ -13,7 +13,7 @@ javascript是单线程,可以极大提高执行效率,事件会一一排放在�
 他们会先挂起,等待异步执行请求数据完毕/定时执行时间到,然后插入存储在事件队列中,</br>
 再由执行栈去读取执行任务
 
-### 1.3 宏任务与微任务
+#### 1.3 宏任务与微任务
 
 以下事件属于宏任务：
 
@@ -32,9 +32,9 @@ new MutaionObserver()
 执行栈任务完毕,会检查是否有微任务,有则执行,去事件队列读取宏任务,</br>
 微任务永远在宏任务之前执行完毕</br>
 
-## <h2 id='2'>node事件循环</h2>
+### <h2 id='2'>node事件循环</h2>
 
-### 2.1 node事件机制模型
+#### 2.1 node事件机制模型
 ```
    ┌───────────────────────┐
 ┌─>│        timers         │
@@ -57,7 +57,7 @@ new MutaionObserver()
    
 ```
    
-### 2.1 执行顺序
+#### 2.1 执行顺序
 
 外部输入数据-->轮询阶段(poll)-->检查阶段(check)--></br>
 关闭事件回调阶段(close callback)-->定时器检测阶段(timer)--></br>
@@ -86,6 +86,20 @@ check:</br>
 
 close callbacks:</br>
 该阶段执行关闭请求的回调函数，比如socket.on('close', ...)
+
+#### 2.2 新增方法
+
+```
+process.nextTick();
+setImmediate();
+
+```
+process.nextTick() 会在本轮执行栈任务执行完毕后执行,比微任务promise()还提前执行</br>
+本轮任务 > process.nextTick() > promise()</br></br>
+
+setImmediate()与setTimeout()</br>
+setImmediate在check中执行,与setTimeout在timer执行,然后在poll等待io执行,会先进行check再执行timer,
+如果符合执行吗,setImmediate会在setTimeout之前执行
 
    
 </br></br></br></br>
