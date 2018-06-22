@@ -1,9 +1,6 @@
 ## Eventloop
 
-
-## <h2 id='1'>js事件循环</h2>
-
-### 1.事件机制
+### <h2 id='1'>1.事件机制</h2>
 
 ### 1.1 模型
 
@@ -62,35 +59,36 @@ new MutaionObserver()
    
 ### 2.1 执行顺序
 
-外部输入数据-->轮询阶段(poll)-->检查阶段(check)-->
-关闭事件回调阶段(close callback)-->定时器检测阶段(timer)-->
-I/O事件回调阶段(I/O callbacks)-->闲置阶段(idle, prepare)-->轮询阶段
+外部输入数据-->轮询阶段(poll)-->检查阶段(check)--></br>
+关闭事件回调阶段(close callback)-->定时器检测阶段(timer)--></br>
+I/O事件回调阶段(I/O callbacks)-->闲置阶段(idle, prepare)-->轮询阶段</br>
 
-timer :
-这个是定时器阶段，处理setTimeout()和setInterval()的回调函数。进入这个阶段后，主线程会检查一下当前时间，
+timer:</br>
+这个是定时器阶段，处理setTimeout()和setInterval()的回调函数。
+进入这个阶段后，主线程会检查一下当前时间，
 是否满足定时器的条件。如果满足就执行回调函数，否则就离开这个阶段
 
-I/O callbacks:
+I/O callbacks:</br>
 除了以下操作的回调函数，其他的回调函数都在这个阶段执行
 setTimeout()和setInterval()的回调函数
 setImmediate()的回调函数
 用于关闭请求的回调函数，比如socket.on('close', ...)
 
-idle, prepare
+idle, prepare:</br>
 该阶段只供 libuv 内部调用，这里可以忽略。
 
-Poll
+Poll:</br>
 这个阶段是轮询时间，用于等待还未返回的 I/O 事件，比如服务器的回应、用户移动鼠标等等。
 这个阶段的时间会比较长。如果没有其他异步任务要处理（比如到期的定时器），会一直停留在这个阶段，等待 I/O 请求返回结果。
 
-check
+check:</br>
 该阶段执行setImmediate()的回调函数
 
-close callbacks
+close callbacks:</br>
 该阶段执行关闭请求的回调函数，比如socket.on('close', ...)
 
    
 
-相关参考资料来自:
-https://zhuanlan.zhihu.com/p/33058983
-http://www.ruanyifeng.com/blog/2018/02/node-event-loop.html
+相关参考资料来自:</br>
+https://zhuanlan.zhihu.com/p/33058983</br>
+http://www.ruanyifeng.com/blog/2018/02/node-event-loop.html</br>
