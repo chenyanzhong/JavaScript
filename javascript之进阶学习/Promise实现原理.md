@@ -1,7 +1,7 @@
 ### Promise实现原理
 
 #### 1 函数雏形
-我们先来看个简单的例子,如下:
+我们先来看个简单的例子,使用Promise调用resolve函数,然后在then相应
 ```
 new Promise(function (resolve) {
             resolve('Hello World');
@@ -9,7 +9,8 @@ new Promise(function (resolve) {
             console.log('then = ' + value);
         })
 ```
-根据这个我们先制作Promise的雏形,
+根据这个我们先制作Promise的雏形,那思路应该是怎么样的泥,在promise使用resolve引用then反应,就比如教室内小明告诉小红有东西给你,
+先注册then的事件,执行resolve
 
 ```
 function Promise(fn) {
