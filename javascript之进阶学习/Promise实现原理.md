@@ -9,15 +9,17 @@ new Promise(function (resolve) {
             console.log('then = ' + value);
         })
 ```
-根据这个我们先制作Promise的雏形,那思路应该是怎么样的泥,在promise使用resolve引用then反应,就比如教室内小明告诉小红有东西给你,
-先注册then的事件,执行resolve
+根据这个我们先制作Promise的雏形,<br/>
+那思路应该是怎么样的泥?我们发现在 promise 使用 resolve 引起 then 反应,我们可以举个栗子,就如小明需要在教室内把东西给小红,但小明不知道小红什么时候进教室内,就是小红进教室时签到,教室里用广播通知小明,小明再把东西给小红<br/>
+在事件中,小红是then事件,小明给东西resolve(value),所以先组册then事件,在由resolve中把值给then
 
 ```
-function Promise(fn) {
+    function Promise(fn) {
             var value = null;
             var callbacks = [];
 
             this.then = function (onFulfilled) {
+                // 添加事件
                 callbacks.push(onFulfilled);
                 return this;
             }
@@ -25,6 +27,7 @@ function Promise(fn) {
             function resolve(newValue) {
                 setTimeout(function () {
                     callbacks.forEach(function (callback) {
+                        //通知
                         callback(newValue);
                     });
                 });
@@ -40,6 +43,7 @@ function Promise(fn) {
             console.log('then = ' + value);
         })
  // 输入then = Hello World
+ 
 ```
 
 这样会得到一个可以输出的Promise,我们来解释几个问题<br/>
@@ -48,7 +52,184 @@ function Promise(fn) {
 所以setTimeout 作为宏任务使事件滞后,使then事件可以被注册
 
 #### 2 引入状态值
+promise 一共有三个状态 pending 进行中,fulfilled 完成,rejected 失败<br/>
+我们先引入pending 进行中,fulfilled 完成,这两个状态
+
+```
+    function Promise(fn) {
+            var Progress = {
+                Pending: 'pending',
+                Fulfilled: 'fulfilled',
+            }
+            var state = Progress.Pending;
+            var value = null;
+            var callbacks = [];
+
+            this.then = function (onFulfilled) {
+                if (state === Progress.Pending) {
+                    callbacks.push(onFulfilled);
+                    return this;
+                }
+                // fulfilled 直接返回值
+                onFulfilled(value);
+                return this;
+            }
+
+            function resolve(newValue) {
+                value = newValue;
+                state = Progress.Fulfilled;
+                setTimeout(function () {
+                    callbacks.forEach(function (callback) {
+                        callback(newValue);
+                    });
+                });
+            }
+
+            fn(resolve);
+
+        }
+        new Promise(function (resolve) {
+            resolve('Hello World');
+        }).then(function (value) {
+            // 状态已经是fulfilled
+            console.log('then = ' + value);
+        }).then(function (value) {
+            // 状态已经是fulfilled
+            console.log('then = ' + value);
+        })
+```
+
+#### 3 串行 Promise
+
+串行Promise 是指在当前 promise 达到 fulfilled 状态后即开始进行下一个 promise（后邻 promise）<br/>
+我们需要支持返回promise时then的返回,支持如下函数
+
+```
+  new Promise(function (resolve) {
+            resolve(1);
+        }).then(function (value) {
+            // 返回Promise
+            return new Promise(function (resolve) {
+                resolve(value);
+            });
+        }).then(function (value) {
+            console.log('结束: ' + value);
+        })
+```
+
+这就需要在原来的基础上增加对promise的回调,我们全部贴上来在一个分析
+```
+function Promise(fn) {
+            var Progress = {
+                Pending: 'pending',
+                Fulfilled: 'fulfilled',
+            }
+            var state = Progress.Pending;
+            var value = null;
+            var callbacks = [];
+
+            function handle(callback) {
+                if (state === Progress.Pending) {
+                    callbacks.push(callback);
+                    return;
+                }
+                var ret = callback.onFulfilled(value);
+
+                // 如果是promise
+                if (ret) {
+                    callback.resolve(ret);
+                }
+            }
+
+            this.then = function (onFulfilled) {
+                // 新建promise返回
+                return new Promise(function (resolve) {
+                    handle({
+                        onFulfilled: onFulfilled || null,
+                        resolve: resolve
+                    });
+                });
+            }
+
+            function resolve(newValue) {
+                
+                if (newValue &&
+                    (typeof newValue === 'object' || typeof newValue === 'function')) {
+                    var then = newValue.then;
+                    if (typeof then === 'function') {
+                        then.call(newValue, resolve);
+                        return;
+                    }
+                }
+
+                state = Progress.Fulfilled;
+                value = newValue;
+                setTimeout(function () {
+                    callbacks.forEach(function (callback) {
+                        handle(callback);
+                    });
+                });
+            }
+
+            fn(resolve);
+
+        }      
+```
+#### 3.1 then的改变
+
+```
+    function handle(callback) {
+        if (state === Progress.Pending) {
+            callbacks.push(callback);
+            return;
+        }
+        var ret = callback.onFulfilled(value);
+    
+        // 如果是promise
+        if (ret) {
+            callback.resolve(ret);
+        }
+    }
+    
+    this.then = function (onFulfilled) {
+        // 新建promise返回
+        return new Promise(function (resolve) {
+            handle({
+                onFulfilled: onFulfilled || null,
+                resolve: resolve
+            });
+        });
+    }
 
 ```
 
+#### 3.2 resolve的改变
 ```
+    function resolve(newValue) {
+                
+        if (newValue &&
+            (typeof newValue === 'object' || typeof newValue === 'function')) {
+            var then = newValue.then;
+            if (typeof then === 'function') {
+                then.call(newValue, resolve);
+                return;
+            }
+        }
+
+        state = Progress.Fulfilled;
+        value = newValue;
+        setTimeout(function () {
+            callbacks.forEach(function (callback) {
+                handle(callback);
+            });
+        });
+    }
+```
+
+
+
+
+<br/><br/><br/><br/><br/>
+参考资料:<br/>
+https://tech.meituan.com/promise-insight.html
+
