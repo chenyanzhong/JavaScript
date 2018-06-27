@@ -8,7 +8,7 @@
 * [4 失败reject处理](#id4)
 * [5 异常处理](#id5)
 
-#### <h2 id='1'>1 函数雏形</h2>
+#### <h2 id='id1'>1 函数雏形</h2>
 我们先来看个简单的例子,使用Promise调用resolve函数,然后在then相应
 ```
 new Promise(function (resolve) {
@@ -61,7 +61,7 @@ new Promise(function (resolve) {
 如果不使用 setTimeout , resolve里面任务会在then之前就执行完毕, 无法存储then里面的事件,造成数组为空,
 所以setTimeout 作为宏任务使事件滞后,使then事件可以被注册
 
-#### <h2 id='2'>2 引入状态值</h2>
+#### <h2 id='id2'>2 引入状态值</h2>
 promise 一共有三个状态 pending 进行中,fulfilled 完成,rejected 失败<br/>
 我们先引入pending 进行中,fulfilled 完成,这两个状态
 
@@ -109,7 +109,7 @@ new Promise(function (resolve) {
 })
 ```
 
-#### <h2 id='3'>3 串行Promise</h2>
+#### <h2 id='id3'>3 串行Promise</h2>
 
 串行Promise 是指在当前 promise 达到 fulfilled 状态后即开始进行下一个 promise（后邻 promise）<br/>
 我们需要支持返回promise时then的返回,支持如下函数
@@ -186,7 +186,7 @@ function Promise(fn) {
 
 }      
 ```
-#### <h2 id='31'>3.1 then的改变</h2>
+#### <h2 id='id31'>3.1 then的改变</h2>
 
 ```
 this.then = function (onFulfilled) {
@@ -214,7 +214,7 @@ function handle(callback) {
 
 ```
 
-#### <h2 id='32'>3.2 resolve的改变</h2>
+#### <h2 id='id32'>3.2 resolve的改变</h2>
 ```
 function resolve(newValue) {
 
@@ -239,7 +239,7 @@ function resolve(newValue) {
 
 ```
 
-#### <h2 id='4'>4 失败reject处理</h2>
+#### <h2 id='id4'>4 失败reject处理</h2>
 增加reject函数,在handle增加对reject的处理
 
 ```
@@ -328,7 +328,7 @@ new Promise(function (resolve, reject) {
 
 ```
 
-#### <h2 id='5'>5 异常处理</h2>
+#### <h2 id='id5'>5 异常处理</h2>
 在执行方法内中 try-catch,并在catch回调函数<br/>
 ```
 try {
