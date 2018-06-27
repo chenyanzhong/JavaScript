@@ -229,11 +229,16 @@ promise 一共有三个状态 pending 进行中,fulfilled 完成,rejected 失败
 ```
 
 #### 4 失败处理
-增加reject函数
+增加reject函数,在handle增加对reject的处理
 
 ```
-    function Promise(fn) {
-            var state = 'pending',
+        function Promise(fn) {
+            var Progress = {
+                Pending: 'pending',
+                Fulfilled: 'fulfilled',
+                Rejected: 'rejected'
+            }
+            var state = Progress.Pending,
                 value = null,
                 callbacks = [];
 
@@ -249,23 +254,25 @@ promise 一共有三个状态 pending 进行中,fulfilled 完成,rejected 失败
             };
 
             function handle(callback) {
-                if (state === 'pending') {
+                if (state === Progress.Pending) {
                     callbacks.push(callback);
                     return;
                 }
-
-                var cb = state === 'fulfilled' ? callback.onFulfilled : callback.onRejected,
-                    ret;
-                if (cb === null) {
-                    cb = state === 'fulfilled' ? callback.resolve : callback.reject;
-                    cb(value);
+                // 是否事件执行完成 完成则获取then里面的事件
+                // 如果不是promise
+                var thenEvent = state === Progress.Fulfilled ? callback.onFulfilled : callback.onRejected;
+                if (thenEvent === null) {
+                    thenEvent = state === Progress.Fulfilled ? callback.resolve : callback.reject;
+                    thenEvent(value);
                     return;
                 }
-                ret = cb(value);
-                callback.resolve(ret);
+                // 是promise的话
+                var promise = thenEvent(value);
+                callback.resolve(promise);
             }
 
             function resolve(newValue) {
+                // 是promise的话
                 if (newValue && (typeof newValue === 'object' || typeof newValue === 'function')) {
                     var then = newValue.then;
                     if (typeof then === 'function') {
@@ -273,80 +280,65 @@ promise 一共有三个状态 pending 进行中,fulfilled 完成,rejected 失败
                         return;
                     }
                 }
-                state = 'fulfilled';
+                state = Progress.Fulfilled;
                 value = newValue;
-                finale();
+                handleCallback();
             }
 
             function reject(reason) {
-                state = 'rejected';
+                state = Progress.Rejected;
                 value = reason;
-                finale();
+                handleCallback();
             }
 
-            function finale() {
+            function handleCallback() {
                 setTimeout(function () {
                     callbacks.forEach(function (deferred) {
                         handle(deferred);
                     });
                 }, 0);
             }
-
+            
             fn(resolve, reject);
+
         }
 
         new Promise(function (resolve, reject) {
-            reject('error');
+            resolve('first Promise resolve');
         }).then(function (value) {
             return new Promise(function (resolve, reject) {
-                reject('Promise - reject ');
+                reject(value + '/second Promise reject');
             });
         }).then(function (value) {
-            console.log(value);
+            console.log('value = ' + value);
         }, function (error) {
-            console.log(error);
+            console.log('error = ' + error);
         });
 
 ```
 
 #### 5 异常处理
-在执行体中 try-catch
-
+在执行方法内中 try-catch,并在catch回调函数<br/>
 ```
-     function handle(callback) {
-                if (state === 'pending') {
-                    callbacks.push(callback);
-                    return;
-                }
-
-                var cb = state === 'fulfilled' ? callback.onFulfilled : callback.onRejected,
-                    ret;
-                if (cb === null) {
-                    cb = state === 'fulfilled' ? callback.resolve : callback.reject;
-                    try {
-                        cb(value);
-                    } catch (e) {
-                        deferred.reject(e);
-                    }
-                    return;
-                }
-                执行方法try-catch
-                try {
-                    ret = cb(value);
-                    deferred.resolve(ret);
-                } catch (e) {
-                    deferred.reject(e);
-                }
-            }
-            
-            // 执行方法try-catch
-            try {
-                fn(resolve, reject);
-            } catch (error) {
-                state = 'rejected';
-                value = error;
-                finale();
-            }   
+     try {
+          fn(resolve, reject);
+     } catch (error) {
+          reject(error);
+     }
+```
+ 
+```
+     new Promise(function (resolve, reject) {
+            resolve('first Promise resolve');
+        }).then(function (value) {
+            return new Promise(function (resolve, reject) {
+                a = 1;
+            });
+        }).then(function (value) {
+            console.log('value = ' + value);
+        }, function (error) {
+            console.log('error = ' + error);
+        });  
 
 ```
 
