@@ -10,8 +10,9 @@
         })
 ```
 根据这个我们先制作Promise的雏形,<br/>
-那思路应该是怎么样的泥?我们发现在 promise 使用 resolve 引起 then 反应,我们可以举个栗子,就如小明需要在教室内把东西给小红,但小明不知道小红什么时候进教室内,就是小红进教室时签到,教室里用广播通知小明,小明再把东西给小红<br/>
-在事件中,小红是then事件,小明给东西resolve(value),所以先组册then事件,在由resolve中把值给then
+那思路应该是怎么样的泥?我们发现在 promise 使用 resolve 引起 then 反应<br/>
+我们想象下面的栗子,就如小明需要在教室内把东西给小红,但小明不知道小红什么时候进教室内,就需要小红进教室时签到,教室里用广播通知小明,小明再把东西给小红<br/>
+在事件中,小红是then事件,需要先注册到数组里,小明给东西resolve(value),通过数组调用then事件,在由resolve中把值给then
 
 ```
     function Promise(fn) {
@@ -42,7 +43,7 @@
         }).then(function (value) {
             console.log('then = ' + value);
         })
- // 输入then = Hello World
+        // 输入then = Hello World
  
 ```
 
@@ -118,6 +119,7 @@ promise 一共有三个状态 pending 进行中,fulfilled 完成,rejected 失败
 ```
 
 这就需要在原来的基础上增加对promise的回调,我们全部贴上来在一个分析
+
 ```
         function Promise(fn) {
             var Progress = {
@@ -227,6 +229,7 @@ promise 一共有三个状态 pending 进行中,fulfilled 完成,rejected 失败
 ```
 
 #### 4 失败处理
+增加reject函数
 
 ```
     function Promise(fn) {
