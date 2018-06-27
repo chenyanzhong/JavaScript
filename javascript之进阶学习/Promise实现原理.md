@@ -226,7 +226,126 @@ function Promise(fn) {
     }
 ```
 
+#### 4 失败处理
 
+```
+    function Promise(fn) {
+            var state = 'pending',
+                value = null,
+                callbacks = [];
+
+            this.then = function (onFulfilled, onRejected) {
+                return new Promise(function (resolve, reject) {
+                    handle({
+                        onFulfilled: onFulfilled || null,
+                        onRejected: onRejected || null,
+                        resolve: resolve,
+                        reject: reject
+                    });
+                });
+            };
+
+            function handle(callback) {
+                if (state === 'pending') {
+                    callbacks.push(callback);
+                    return;
+                }
+
+                var cb = state === 'fulfilled' ? callback.onFulfilled : callback.onRejected,
+                    ret;
+                if (cb === null) {
+                    cb = state === 'fulfilled' ? callback.resolve : callback.reject;
+                    cb(value);
+                    return;
+                }
+                ret = cb(value);
+                callback.resolve(ret);
+            }
+
+            function resolve(newValue) {
+                if (newValue && (typeof newValue === 'object' || typeof newValue === 'function')) {
+                    var then = newValue.then;
+                    if (typeof then === 'function') {
+                        then.call(newValue, resolve, reject);
+                        return;
+                    }
+                }
+                state = 'fulfilled';
+                value = newValue;
+                finale();
+            }
+
+            function reject(reason) {
+                state = 'rejected';
+                value = reason;
+                finale();
+            }
+
+            function finale() {
+                setTimeout(function () {
+                    callbacks.forEach(function (deferred) {
+                        handle(deferred);
+                    });
+                }, 0);
+            }
+
+            fn(resolve, reject);
+        }
+
+        new Promise(function (resolve, reject) {
+            reject('error');
+        }).then(function (value) {
+            return new Promise(function (resolve, reject) {
+                reject('Promise - reject ');
+            });
+        }).then(function (value) {
+            console.log(value);
+        }, function (error) {
+            console.log(error);
+        });
+
+```
+
+#### 5 异常处理
+在执行体中 try-catch
+
+```
+     function handle(callback) {
+                if (state === 'pending') {
+                    callbacks.push(callback);
+                    return;
+                }
+
+                var cb = state === 'fulfilled' ? callback.onFulfilled : callback.onRejected,
+                    ret;
+                if (cb === null) {
+                    cb = state === 'fulfilled' ? callback.resolve : callback.reject;
+                    try {
+                        cb(value);
+                    } catch (e) {
+                        deferred.reject(e);
+                    }
+                    return;
+                }
+                执行方法try-catch
+                try {
+                    ret = cb(value);
+                    deferred.resolve(ret);
+                } catch (e) {
+                    deferred.reject(e);
+                }
+            }
+            
+            // 执行方法try-catch
+            try {
+                fn(resolve, reject);
+            } catch (error) {
+                state = 'rejected';
+                value = error;
+                finale();
+            }   
+
+```
 
 
 <br/><br/><br/><br/><br/>
