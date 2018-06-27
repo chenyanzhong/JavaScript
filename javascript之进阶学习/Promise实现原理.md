@@ -3,7 +3,7 @@
 #### 1 函数雏形
 我们先来看个简单的例子,使用Promise调用resolve函数,然后在then相应
 ```
-new Promise(function (resolve) {
+        new Promise(function (resolve) {
             resolve('Hello World');
         }).then(function (value) {
             console.log('then = ' + value);
@@ -37,7 +37,7 @@ new Promise(function (resolve) {
 
         }
         
- new Promise(function (resolve) {
+        new Promise(function (resolve) {
             resolve('Hello World');
         }).then(function (value) {
             console.log('then = ' + value);
@@ -105,7 +105,7 @@ promise 一共有三个状态 pending 进行中,fulfilled 完成,rejected 失败
 我们需要支持返回promise时then的返回,支持如下函数
 
 ```
-  new Promise(function (resolve) {
+        new Promise(function (resolve) {
             resolve(1);
         }).then(function (value) {
             // 返回Promise
@@ -119,7 +119,7 @@ promise 一共有三个状态 pending 进行中,fulfilled 完成,rejected 失败
 
 这就需要在原来的基础上增加对promise的回调,我们全部贴上来在一个分析
 ```
-function Promise(fn) {
+        function Promise(fn) {
             var Progress = {
                 Pending: 'pending',
                 Fulfilled: 'fulfilled',
