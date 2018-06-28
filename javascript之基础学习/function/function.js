@@ -1,4 +1,4 @@
-console.log('function');
+log('------------------');
 
 function log(msg) {
     console.log(msg);
