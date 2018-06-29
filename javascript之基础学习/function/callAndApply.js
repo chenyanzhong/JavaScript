@@ -1,10 +1,5 @@
-log('------------------');
+log('--------__call apply__--------');
 
-//call apply
-function log() {
-    console.log(arguments[0]);
-}
-log('call apply');
 // 等于 window.color = 'red'; 
 var color = 'red';
 var obj = { color: 'white' };

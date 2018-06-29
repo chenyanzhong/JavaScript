@@ -1,8 +1,5 @@
-log('------------------');
+log('--------__base function__--------');
 
-function log(msg) {
-    console.log(msg);
-}
 // 1.作为函数调用
 function creep() {
     console.log('creep');

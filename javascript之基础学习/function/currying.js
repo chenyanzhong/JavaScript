@@ -1,4 +1,4 @@
-log('------------------');
+log('--------__call apply__--------');
 
 function log(msg) {
     console.log(msg);
@@ -17,9 +17,12 @@ log(curriedAdd(3));
 
 function curry(fn) {
     var args = Array.prototype.slice.call(arguments, 1);
+    console.log(args);
     return function () {
         var innerArgs = Array.prototype.slice.call(arguments);
+        console.log(innerArgs);
         var finalArgs = args.concat(innerArgs);
+        console.log(finalArgs);
         return fn.apply(null, finalArgs);
     }
 }
@@ -32,5 +35,18 @@ log(curriedAdd(3));
 function addX(y) {
     return function (x) { return x + y; };
 }
-var newAdd = addX(2)
-newAdd(1)
+var newAdd = addX(2);
+console.log(newAdd(1));
+
+
+function add(num1, num2) {
+    return num1 + num2;
+}
+
+function handle(y) {
+    return function (x) {
+        return x + y;
+    }
+}
+let handleNum1 = handle(2);
+log(handleNum1(1));

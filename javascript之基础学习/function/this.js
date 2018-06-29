@@ -1,10 +1,4 @@
-log('------------------');
-
-function log(msg) {
-    console.log(msg);
-}
-
-log('this');
+log('--------__this__--------');
 
 // 1.作为函数调用
 function creep() {

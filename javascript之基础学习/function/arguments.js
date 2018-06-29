@@ -1,10 +1,6 @@
-log('------------------');
+log('--------__arguments__--------');
 
 //arguments
-function log(msg) {
-    console.log(msg);
-}
-
 function sum1(num) {
     if (num <= 1) {
         return 1;
